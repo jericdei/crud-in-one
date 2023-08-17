@@ -1,0 +1,32 @@
+.title {
+	font-size: 1.2rem;
+	font-weight: bold;
+	text-align: center;
+}
+
+form {
+	width: 50%;
+	margin-block: 2rem;
+	margin-inline: auto;
+}
+
+form div {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.input-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.input-group label {
+	font-weight: bold;
+}
+
+.input-group input {
+	font-size: 1.5rem;
+	padding: 0.5rem;
+}

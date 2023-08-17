@@ -1,0 +1,27 @@
+name: crud-in-one
+
+services:
+  database:
+    type: mysql
+    portforward: true
+    creds:
+      user: crud_user
+      password: password
+      database: crud_db
+
+  vanilla:
+    type: php:8.2
+    via: nginx
+    webroot: ./vanilla
+    ssl: false
+    scanner: false
+    composer_version: false
+
+proxy:
+  vanilla_nginx: 
+    - vanilla.crud.localhost
+
+tooling:
+  mysql:
+    service: database
+    cmd: mysql -u crud_user -ppassword
