@@ -3,7 +3,7 @@ name: crud-in-one
 services:
   database:
     type: mysql
-    portforward: true
+    portforward: 33062
     creds:
       user: crud_user
       password: password
@@ -17,11 +17,35 @@ services:
     scanner: false
     composer_version: false
 
+  node:
+    type: node:18
+    scanner: false
+    ssl: false
+    ports: 
+      - '3000:3000' # API
+      - '5173:5173' # React
+    build:
+      - npm install -G pnpm
+
 proxy:
   vanilla_nginx: 
     - vanilla.crud.localhost
 
+  node:
+    - react.crud.localhost:5173
+    - api.crud.localhost:3000
+
 tooling:
-  mysql:
-    service: database
-    cmd: mysql -u crud_user -ppassword
+  node:
+    service: node
+
+  pnpm:
+    service: node
+
+  dev-react:
+    service: node
+    cmd: cd ./react && pnpm run dev
+
+  dev-api:
+    service: node
+    cmd: cd ./api && pnpm nodemon .

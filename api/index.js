@@ -16,10 +16,31 @@ app.get('/users', async (req, res) => {
 	res.json(users);
 });
 
-app.post('/users/:id', async (req, res) => {
-	const user = await prisma.users.findOne({id: req.params});
+app.post('/users', async (req, res) => {
+	const user = await prisma.users.create({
+		data: req.body
+	})
 
-	console.log(user);
+	res.json(user)
+})
+
+app.patch('/users/:id', async (req, res) => {
+	const user = await prisma.users.update({
+		where: {
+			id: req.params.id
+		},
+		data: req.body
+	});
+
+	res.json(user);
+})
+
+app.delete('/users/:id', async (req, res) => {
+	await prisma.users.delete({
+		where: {
+			id: req.params.id
+		}
+	})
 })
 
 app.listen(port, () => {
