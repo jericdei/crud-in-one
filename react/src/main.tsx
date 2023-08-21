@@ -9,7 +9,7 @@ import {
     RouterProvider,
 } from "react-router-dom";
 import Root from "./routes/root";
-import List from "./routes/list";
+import Crud from "./routes/crud";
 
 const router = createBrowserRouter([
 {
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     children: [
         {
             path: "/",
-            element: <List />
+            element: <Crud />
         }
     ]
 },

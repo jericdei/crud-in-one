@@ -6,8 +6,9 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputNumberValueChangeEvent } from "primereact/inputnumber";
 
-export default function List() {
+export default function Crud() {
 	const initialFormData = {
+		id: null,
 		first_name: '',
 		last_name: '',
 		email: '',
@@ -16,7 +17,6 @@ export default function List() {
 
 	const [users, setUsers] = useState()
 	const [visible, setVisible] = useState(false)
-
 	const [formData, setFormData] = useState(initialFormData)
 
 	const fetchUsers = async () => {
@@ -35,11 +35,26 @@ export default function List() {
 		setFormData((previous) => ({ ...previous, [name]: value }))
 	}
 
+	const handleEditClick = async (id: number) => {
+		const res = await fetch(`http://api.crud.localhost/users/${id}`)
+
+		if (res.ok) {
+			setFormData({...(await res.json())})
+
+			setVisible(true);
+		}
+		
+	}
+
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		const res = await fetch('http://api.crud.localhost/users', {
-			method: 'POST',
+		const url = formData.id
+			? `http://api.crud.localhost/users/${formData.id}`
+			: 'http://api.crud.localhost/users'
+
+		const res = await fetch(url, {
+			method: formData.id ? 'PATCH' : 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json'
@@ -56,8 +71,14 @@ export default function List() {
 		}
 	}
 
-	const handleDelete = (id: number) => {
-		console.log(id);
+	const handleDelete = async (id: number) => {
+		const res = await fetch(`http://api.crud.localhost/users/${id}`, {
+			method: 'DELETE',
+		})
+
+		if (res.ok) {
+			await fetchUsers()
+		}
 	}
 
 	return (
@@ -76,7 +97,7 @@ export default function List() {
 				<Column header='Phone Number' field='phone' />
 				<Column header='Actions' body={(data) => (
 					<div className='flex gap-4'>
-						<Button label='Edit' severity='info' />
+						<Button label='Edit' severity='info' onClick={() => handleEditClick(data.id)} />
 						<Button label='Delete' severity='danger' onClick={() => handleDelete(data.id)} />		
 					</div>
 				)} />
@@ -90,6 +111,7 @@ export default function List() {
 				style={{
 					width: '30%'
 				}}
+				draggable={false}
 			>
 				<form onSubmit={handleSubmit}>
 					<div className="flex flex-col gap-8 py-6">

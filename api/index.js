@@ -16,6 +16,16 @@ app.get('/users', async (req, res) => {
 	res.json(users);
 });
 
+app.get('/users/:id', async (req, res) => {
+	const user = await prisma.users.findFirst({
+		where: {
+			id: parseInt(req.params.id)
+		}
+	})
+
+	res.json(user);
+})
+
 app.post('/users', async (req, res) => {
 	const user = await prisma.users.create({
 		data: req.body
@@ -27,7 +37,7 @@ app.post('/users', async (req, res) => {
 app.patch('/users/:id', async (req, res) => {
 	const user = await prisma.users.update({
 		where: {
-			id: req.params.id
+			id: parseInt(req.params.id)
 		},
 		data: req.body
 	});
@@ -38,8 +48,12 @@ app.patch('/users/:id', async (req, res) => {
 app.delete('/users/:id', async (req, res) => {
 	await prisma.users.delete({
 		where: {
-			id: req.params.id
+			id: parseInt(req.params.id)
 		}
+	})
+
+	res.json({
+		message: 'Nice'
 	})
 })
 
