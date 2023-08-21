@@ -24,16 +24,19 @@ services:
     ports: 
       - '3000:3000' # API
       - '5173:5173' # React
-    build:
-      - npm install -G pnpm
+      - '5174:5174' # Vue
+    globals:
+      pnpm: latest
+    command: cd ./api && pnpm nodemon . # Start API Server
 
 proxy:
   vanilla_nginx: 
     - vanilla.crud.localhost
 
   node:
-    - react.crud.localhost:5173
     - api.crud.localhost:3000
+    - react.crud.localhost:5173
+    - vue.crud.localhost:5174
 
 tooling:
   node:
@@ -42,10 +45,16 @@ tooling:
   pnpm:
     service: node
 
-  dev-react:
+  api:
+    service: node
+    cmd: cd ./api && pnpm nodemon .
+
+  react:
     service: node
     cmd: cd ./react && pnpm run dev
 
-  dev-api:
+  vue:
     service: node
-    cmd: cd ./api && pnpm nodemon .
+    cmd: cd ./vue && pnpm run dev
+
+
